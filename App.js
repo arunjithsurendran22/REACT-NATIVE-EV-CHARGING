@@ -30,7 +30,7 @@ const tokenCache = {
 SplashScreen.preventAutoHideAsync();
 
 const CLERK_PUBLISHABLE_KEY =
-  "pk_test_bW9yZS1zY3VscGluLTguY2xlcmsuYWNjb3VudHMuZGV2JA";
+  "pk_test_cXVpY2stcG9ueS04MC5jbGVyay5hY2NvdW50cy5kZXYk";
 
 export default function App() {
   const [location, setLocation] = useState(null);

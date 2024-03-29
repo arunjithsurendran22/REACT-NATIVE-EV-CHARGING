@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity, Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../Screens/HomeScreen/HomeScreen";
 import FavoriteScreen from "../Screens/FavoriteScreen";
@@ -7,10 +7,22 @@ import ProfileScreen from "../Screens/ProfileScreen";
 import { FontAwesome } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import Colors from "../utils/Colors";
+import { useClerk } from "@clerk/clerk-expo";
+import { useNavigation } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigation = () => {
+  const { signOut } = useClerk();
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
       <Tab.Screen
@@ -46,10 +58,26 @@ const TabNavigation = () => {
           ),
         }}
       />
+      
     </Tab.Navigator>
   );
 };
 
-const styles = StyleSheet.create({});
+const LogoutScreen = ({ handleLogout }) => {
+  return (
+    <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+      <Text style={styles.logoutText}>Logout</Text>
+    </TouchableOpacity>
+  );
+};
+
+const styles = StyleSheet.create({
+  
+  logoutText: {
+    color: Colors.WHITE,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+});
 
 export default TabNavigation;

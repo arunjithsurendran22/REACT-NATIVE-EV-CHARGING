@@ -1,9 +1,23 @@
 import React from "react";
 import { useOAuth } from "@clerk/clerk-expo";
 import * as WebBrowser from "expo-web-browser";
-import { View, StyleSheet, Text, Image, TouchableOpacity } from "react-native";
-import Colors from "../utils/Colors";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  StatusBar,
+} from "react-native";
 import { useWarmUpBrowser } from "../../hooks/useWarmUpBrowser.tsx";
+import Animated, {
+  FadeIn,
+  FadeOut,
+  FadeInUp,
+  BounceIn,
+  FlipInEasyX,
+} from "react-native-reanimated";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -16,14 +30,6 @@ const LoginScreen = () => {
 
   const { startOAuthFlow: startFacebookOAuthFlow } = useOAuth({
     strategy: "oauth_facebook",
-  });
-
-  const { startOAuthFlow: startLinkedInOAuthFlow } = useOAuth({
-    strategy: "oauth_linkedin",
-  });
-
-  const { startOAuthFlow: startTwitterOAuthFlow } = useOAuth({
-    strategy: "oauth_twitter",
   });
 
   const { startOAuthFlow: startGitHubOAuthFlow } = useOAuth({
@@ -58,34 +64,6 @@ const LoginScreen = () => {
     }
   };
 
-  const handleLinkedInLogin = async () => {
-    try {
-      const { createdSessionId, setActive } = await startLinkedInOAuthFlow();
-
-      if (createdSessionId) {
-        setActive({ session: createdSessionId });
-      } else {
-        // Use signIn or signUp for next steps such as MFA
-      }
-    } catch (err) {
-      console.error("LinkedIn OAuth error", err);
-    }
-  };
-
-  const handleTwitterLogin = async () => {
-    try {
-      const { createdSessionId, setActive } = await startTwitterOAuthFlow();
-
-      if (createdSessionId) {
-        setActive({ session: createdSessionId });
-      } else {
-        // Use signIn or signUp for next steps such as MFA
-      }
-    } catch (err) {
-      console.error("Twitter OAuth error", err);
-    }
-  };
-
   const handleGitHubLogin = async () => {
     try {
       const { createdSessionId, setActive } = await startGitHubOAuthFlow();
@@ -102,48 +80,120 @@ const LoginScreen = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor="#000" />
       <Image
-        source={{
-          uri: "https://play-lh.googleusercontent.com/ECrWbkZcf9Of2MJq5H8NTbHN-lG9V6dBpSX6-jeUmkQzzdXlcdj4ttdncotkFZC5_7Q",
-        }}
-        style={styles.logoImage}
+        source={require("../../assets/images/background.png")}
+        style={styles.backgroundImage}
       />
-      <View style={styles.bgContainer}>
+      {/* Lights */}
+      <Animated.View
+        entering={FadeInUp.delay(1000).springify()}
+        style={styles.lightsContainer}
+      >
         <Image
-          source={{
-            uri: "https://evocharge.com/wp-content/uploads/2021/02/GettyImages-1249775796.jpg",
-          }}
-          style={styles.bgImage}
+          source={require("../../assets/images/Hanging-Light-PNG-Transparent-Image.png")}
+          style={[styles.lightImage, { height: 400, width: 200 }]}
         />
-      </View>
-      <View style={styles.headingContainer}>
-        <Text style={styles.headingOne}>
-          Your Ultimate EV Charging Station Finder App{" "}
-        </Text>
-        <Text style={styles.headingTwo}>
-          Find EV Charging stations near you, plan trips, and more with just one
-          click{" "}
-        </Text>
-        <TouchableOpacity style={styles.button} onPress={handleGoogleLogin}>
-          <Image source={require('../../assets/google.png')} style={styles.icon} />
-          <Text style={styles.buttonText}>Login with Google</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleFacebookLogin}>
-          <Image source={require('../../assets/github.png')} style={styles.icon} />
-          <Text style={styles.buttonText}>Login with Facebook</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleLinkedInLogin}>
-          <Image source={require('../../assets/linkedin.png')} style={styles.icon} />
-          <Text style={styles.buttonText}>Login with LinkedIn</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleTwitterLogin}>
-          <Image source={require('../../assets/twitter.png')} style={styles.icon} />
-          <Text style={styles.buttonText}>Login with Twitter</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleGitHubLogin}>
-          <Image source={require('../../assets/github.png')} style={styles.icon} />
-          <Text style={styles.buttonText}>Login with GitHub</Text>
-        </TouchableOpacity>
+        <Image
+          source={require("../../assets/images/Hanging-Light-PNG-Transparent-Image.png")}
+          style={[styles.lightImage, { height: 250, width: 100 }]}
+        />
+      </Animated.View>
+
+      <View style={styles.contentContainer}>
+        {/* Title */}
+        <Animated.View
+          entering={FadeInUp.delay(1500).springify()}
+          style={styles.titleContainer}
+        >
+          <Text style={styles.titleText}>SignIn</Text>
+        </Animated.View>
+
+        {/* Social Icons */}
+        <Animated.View
+          entering={FadeInUp.delay(1600).springify()}
+          style={styles.socialContainer}
+        >
+          <TouchableOpacity
+            style={[styles.socialButton, styles.googleButton]}
+            onPress={handleGoogleLogin}
+          >
+            <Animated.Image
+              entering={BounceIn.delay(1800).springify()}
+              source={require("../../assets/images/google.png")}
+              style={styles.socialIcon}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.socialButton, styles.facebookButton]}
+            onPress={handleFacebookLogin}
+          >
+            <Animated.Image
+              entering={BounceIn.delay(2000).springify()}
+              source={require("../../assets/images/facebook.png")}
+              style={styles.socialIcon}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.socialButton, styles.githubButton]}
+            onPress={handleGitHubLogin}
+          >
+            <Animated.Image
+              entering={BounceIn.delay(2200).springify()}
+              source={require("../../assets/images/github.png")}
+              style={styles.socialIcon}
+            />
+          </TouchableOpacity>
+        </Animated.View>
+
+        {/* Form */}
+        <View style={styles.formContainer}>
+          <Animated.View
+            entering={FadeInUp.delay(2400).springify()}
+            style={styles.inputContainer}
+          >
+            <TextInput
+              placeholder="Email"
+              placeholderTextColor={"gray"}
+              style={styles.input}
+            />
+          </Animated.View>
+          <Animated.View
+            entering={FadeInUp.delay(2600).springify()}
+            style={styles.inputContainer}
+          >
+            <TextInput
+              placeholder="Password"
+              placeholderTextColor={"gray"}
+              secureTextEntry
+              style={styles.input}
+            />
+          </Animated.View>
+          <Animated.View
+            entering={FadeInUp.delay(2800).springify()}
+            style={styles.buttonContainer}
+          >
+            <Animated.View entering={FlipInEasyX.delay(3000).springify()}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  /* handle sign in */
+                }}
+              >
+                <Text style={styles.buttonText}>SIGN IN</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </Animated.View>
+          <Animated.View
+            entering={FadeInUp.delay(3200).springify()}
+            style={styles.signUpContainer}
+          >
+            <Text style={styles.signUpText}>Don't have an account?</Text>
+            <TouchableOpacity onPress={() => navigation.push("SignUp")}>
+              <Text style={styles.signUpLink}>SignUp</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </View>
       </View>
     </View>
   );
@@ -152,68 +202,109 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 20,
   },
-  logoImage: {
-    width: 100,
-    height: 100,
-  },
-  bgContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
+  backgroundImage: {
     width: "100%",
-    height: 200,
-    zIndex: -1,
+    height: "100%",
+    position: "absolute",
   },
-  bgImage: {
+  lightsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    position: "absolute",
+    width: "100%",
+    top: -90,
+  },
+  lightImage: {
+    resizeMode: "contain",
+  },
+  contentContainer: {
     flex: 1,
-    resizeMode: "cover",
-  },
-  headingContainer: {
+    justifyContent: "flex-end",
     alignItems: "center",
-    paddingTop: 30,
+    paddingBottom: 50,
   },
-  headingOne: {
-    fontFamily: "outfit-bold",
-    fontSize: 25,
-    textAlign: "center",
-  },
-  headingTwo: {
-    fontFamily: "outfit-medium",
-    textAlign: "center",
-    marginTop: 10,
-    color: Colors.GRAY,
-  },
-  button: {
-    flexDirection: 'row',
-    backgroundColor: Colors.BLUE,
-    width: 320,
-    borderRadius: 30,
-    paddingVertical: 15,
-    alignItems: "center",
+  titleContainer: {
+    flex: 1,
     justifyContent: "center",
-    marginTop: 20,
-    shadowColor: Colors.GRAY,
+  },
+  titleText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 36,
+    fontStyle: "italic",
+  },
+  socialContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 20,
+  },
+  socialButton: {
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 10,
+      height: 2,
     },
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
-    elevation: 10,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    marginRight: 10,
+  },
+  googleButton: {
+    backgroundColor: "#ffff",
+  },
+  facebookButton: {
+    backgroundColor: "#ffff",
+  },
+  githubButton: {
+    backgroundColor: "#ffff",
+  },
+  socialIcon: {
+    width: 30,
+    height: 30,
+  },
+  formContainer: {
+    width: "100%",
+    paddingHorizontal: 20,
+  },
+  inputContainer: {
+    backgroundColor: "rgba(0,0,0,0.1)",
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  input: {
+    color: "black",
+  },
+  buttonContainer: {
+    width: "100%",
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: "#1DA9EF",
+    padding: 10,
+    borderRadius: 10,
   },
   buttonText: {
-    color: Colors.WHITE,
+    color: "white",
     fontSize: 18,
-    fontFamily: "outfit-bold",
-    marginLeft: 10,
+    fontWeight: "bold",
+    textAlign: "center",
   },
-  icon: {
-    width: 24,
-    height: 24,
+  signUpContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  signUpText: {
+    color: "gray",
+    fontStyle: "italic",
+    marginRight: 5,
+  },
+  signUpLink: {
+    color: "#1DA9EF",
   },
 });
 
